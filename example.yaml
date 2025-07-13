@@ -1,0 +1,55 @@
+esphome:
+  name: YourDeviceName
+  friendly_name: Your Device Name
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/amirlanesman/esphome-star-fans
+      ref: main
+
+remote_receiver:
+  pin: 
+    number: GPIO5
+    mode: INPUT_PULLUP
+  tolerance: 30%
+  filter: 230us
+  idle: 8ms
+
+remote_transmitter:
+  pin: GPIO4
+  carrier_duty_percent: 100%
+
+star:
+  id: star1
+  remote_id: 6 # Replace with your actual remote ID (Check Readme for details)
+  repeat: 
+    times: 10
+    wait_time: 10ms
+  block_for_transmit_time: 1000ms
+  notification_light: status_led_1
+
+output:
+  - platform: gpio
+    pin: P9
+    id: builtin_light_pin
+
+light:
+  - platform: binary
+    id: status_led_1
+    output: builtin_light_pin
+  - platform: star
+    star_id: star1
+    name: Star Fan Light
+    restore_mode: RESTORE_DEFAULT_OFF
+
+fan:
+  - platform: star
+    star_id: star1
+    name: Star Fan
+
+button:
+  - platform: template
+    name: Toggle Light State
+    on_press:
+       - star_light.toggle_state:
