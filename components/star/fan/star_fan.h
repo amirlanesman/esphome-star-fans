@@ -34,6 +34,7 @@ namespace esphome
 
     {
     public:
+      void setup() override;
       fan::FanTraits get_traits() override { return fan::FanTraits(false, true, true, STAR_FAN_SPEED_COUNT); }
 
       void dump_config() override;

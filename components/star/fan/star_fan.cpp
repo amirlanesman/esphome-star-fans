@@ -8,6 +8,16 @@ namespace esphome
 
     static const char *const TAG = "star.fan";
 
+    void StarFanComponent::setup() {
+      auto restore = this->restore_state_();
+      if (restore.has_value()) {
+        restore->apply(*this);
+        this->publish_state();
+        ESP_LOGD(TAG, "Restored state: %s, speed: %d, direction: %s",
+                 ONOFF(this->state), this->speed, this->direction == fan::FanDirection::FORWARD ? "FORWARD" : "REVERSE");
+      }
+    }
+
     int8_t StarFanComponent::get_speed(int8_t code)
     {
       switch (code)
